@@ -1,0 +1,19 @@
+services:
+  database:
+    container_name: auth-server-dev-database
+    image: postgres:latest
+    restart: always
+    shm_size: 256mb
+    environment:
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_USERNAME}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    healthcheck:
+      test: pg_isready -d ${DATABASE_NAME} -U ${DATABASE_USERNAME} -h database
+      interval: 2s
+      timeout: 3s
+      retries: 120
+    ports:
+      - ${DATABASE_PORT}:5432
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
